@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .base import BaseEngine, EngineRegistry
-from .fsdp import FSDPEngine, FSDPEngineWithLMHead
+from .fsdp import DiffusersFSDPEngine, FSDPEngine, FSDPEngineWithLMHead
 
 __all__ = [
     "BaseEngine",
@@ -21,6 +21,17 @@ __all__ = [
     "FSDPEngineWithLMHead",
 ]
 
+if DiffusersFSDPEngine is not None:
+    __all__.append("DiffusersFSDPEngine")
+
+try:
+    from .torchtitan import TorchTitanEngine, TorchTitanEngineWithLMHead
+
+    __all__ += ["TorchTitanEngine", "TorchTitanEngineWithLMHead"]
+except ImportError:
+    TorchTitanEngine = None
+    TorchTitanEngineWithLMHead = None
+
 try:
     from .veomni import VeOmniEngine, VeOmniEngineWithLMHead
 
@@ -28,6 +39,14 @@ try:
 except ImportError:
     VeOmniEngine = None
     VeOmniEngineWithLMHead = None
+
+try:
+    from .automodel import AutomodelEngine, AutomodelEngineWithLMHead
+
+    __all__ += ["AutomodelEngine", "AutomodelEngineWithLMHead"]
+except ImportError:
+    AutomodelEngine = None
+    AutomodelEngineWithLMHead = None
 
 # Mindspeed must be imported before Megatron to ensure the related monkey patches take effect as expected
 try:
